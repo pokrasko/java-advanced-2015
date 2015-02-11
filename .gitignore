@@ -1,0 +1,10 @@
+.idea
+*.iml
+*-solutions
+.out
+build.xml
+.build
+log.xml
+__Test__*
+java/info/kgeorgiy/java/advanced/base/CertificateGenerator.java
+artifacts

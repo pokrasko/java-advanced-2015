@@ -13,7 +13,7 @@
  * Запустите
    `info.kgeorgiy.java.advanced.walk.Tester Walk <полное имя класса>`
    для простого варианта, и 
-   `info.kgeorgiy.java.advanced.walk.Tester WalkRecursive <полное имя класса>`
+   `info.kgeorgiy.java.advanced.walk.Tester RecursiveWalk <полное имя класса>`
    для сложного. Обратите внимание, что все скачанные `.jar` файлы должны
    быть указаны в `CLASSPATH`.
     

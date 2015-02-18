@@ -35,9 +35,11 @@ public class BaseTester {
                 }
             }
         } else {
+            System.out.println("============================");
             System.out.println("OK " + token.getSimpleName() + " for " + args[1]);
+            certify(token, args.length > 2 ? args[2] : "");
+            System.out.println("============================");
         }
-        certify(token, args.length > 2 ? args[2] : "");
     }
 
     protected void certify(final Class<?> token, final String salt) {

@@ -62,7 +62,7 @@ public class WalkTest {
 
     @Test
     public void test05_smallRandomFiles() throws IOException {
-        test(randomFiles(1, 100));
+        test(randomFiles(10, 100));
     }
 
     @Test
@@ -77,8 +77,44 @@ public class WalkTest {
 
     @Test
     public void test08_chineseSupport() throws IOException {
+        final String alphabet = ALPHABET;
         ALPHABET = "\u8acb\u554f\u4f60\u7684\u7a0b\u5e8f\u652f\u6301\u4e2d\u570b";
-        test(randomFiles(10, 1));
+        test(randomFiles(10, 100));
+        ALPHABET = alphabet;
+    }
+
+    @Test
+    public void test09_noInput() throws IOException {
+        runRaw(randomFileName(), randomFileName());
+    }
+
+    @Test
+    public void test10_invalidInput() throws IOException {
+        runRaw("/", randomFileName());
+    }
+
+    @Test
+    public void test11_invalidOutput() throws IOException {
+        runRaw(createEmptyFile(name.getMethodName()), "/");
+    }
+
+    @Test
+    public void test12_singleArgument() throws IOException {
+        runRaw(createEmptyFile(name.getMethodName()));
+    }
+
+    @Test
+    public void test13_veryLargeFile() throws IOException {
+        final String alphabet = ALPHABET;
+        ALPHABET = "\u8acb\u554f\u4f60\u7684\u7a0b\u5e8f\u652f\u6301\u4e2d\u570b";
+        test(randomFiles(10, 100));
+        ALPHABET = alphabet;
+    }
+
+    private String createEmptyFile(final String name) throws IOException {
+        final Path input = DIR.resolve(name);
+        Files.write(input, new byte[0]);
+        return input.toString();
     }
 
     protected void test(final Map<String, Integer> files) {
@@ -109,6 +145,10 @@ public class WalkTest {
     }
 
     private void run(final Path inputFile, final Path outputFile) {
+        runRaw(inputFile.toString(), outputFile.toString());
+    }
+
+    private void runRaw(final String... args) {
         final String className = System.getProperty("cut");
         Assert.assertTrue("Class name not specified", className != null);
         final Method method;
@@ -119,13 +159,23 @@ public class WalkTest {
         } catch (final NoSuchMethodException e) {
             throw new AssertionError("Cannot find method main(String[]) of class " + className, e);
         }
+        System.out.println("Running " + name.getMethodName());
         try {
-            method.invoke(null, new Object[]{new String[]{inputFile.toString(), outputFile.toString()}});
+            method.invoke(null, (Object) args);
+            syncErr();
         } catch (final IllegalAccessException e) {
             throw new AssertionError("Cannot call main(String[]) of class " + className, e);
         } catch (final InvocationTargetException e) {
-            throw new AssertionError("Error thrown", e);
+            throw new AssertionError("Error thrown", e.getCause());
         }
+    }
+
+    private void syncErr() {
+//        try {
+//            Thread.sleep(1000);
+//        } catch (final InterruptedException e) {
+//            throw new AssertionError(e);
+//        }
     }
 
     private String generateInput(final Collection<String> files) {

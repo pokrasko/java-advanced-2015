@@ -38,7 +38,6 @@ public class BaseTester {
             System.out.println("============================");
             System.out.println("OK " + token.getSimpleName() + " for " + args[1]);
             certify(token, args.length > 2 ? args[2] : "");
-            System.out.println("============================");
         }
     }
 
@@ -50,6 +49,7 @@ public class BaseTester {
             // Ignore
         } catch (final Exception e) {
             System.err.println("Error running certificate generator");
+            e.printStackTrace();
         }
     }
 

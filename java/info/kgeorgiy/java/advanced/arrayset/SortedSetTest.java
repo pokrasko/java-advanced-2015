@@ -41,7 +41,6 @@ public class SortedSetTest {
     public void test01_constructors() throws ClassNotFoundException, NoSuchMethodException {
         final Class<?> token = loadClass();
         Assert.assertTrue(token.getName() + " should implement SortedSet interface", SortedSet.class.isAssignableFrom(token));
-        //        assertTrue(SortedSet.class.isAssignableFrom(token), token.getName() + " should implement SortedSet interface");
 
         checkConstructor("default constructor", token);
         checkConstructor("constructor out of Collection", token, Collection.class);
@@ -85,12 +84,7 @@ public class SortedSetTest {
 
     @Test
     public void test05_constructorPerformance() {
-        performance("constructor", new Runnable() {
-            @Override
-            public void run() {
-                performanceSet(PERFORMANCE_SIZE);
-            }
-        });
+        performance("constructor", () -> performanceSet(PERFORMANCE_SIZE));
     }
 
     @Test
@@ -279,7 +273,7 @@ public class SortedSetTest {
             new NamedComparator("Reverse order") {
                 @Override
                 public int compare(final Integer i1, final Integer i2) {
-                    return Integer.compare(i1, i2);
+                    return Integer.compare(i2, i1);
                 }
             },
             new NamedComparator("Div 100") {

@@ -3,6 +3,22 @@
 
 [Условия домашних заданий](http://www.kgeorgiy.info/courses/java-advanced/homeworks.html)
 
+Домашнее задание 3. Implementor
+----
+* Протестировать сложную версию задания: 
+    ```
+    info.kgeorgiy.java.advanced.implementor.Tester interface <полное имя класса>
+    ```
+* Протестировать простую версию задания: 
+    ```
+    info.kgeorgiy.java.advanced.implementor.Tester class <полное имя класса>
+    ```
+
+Исходный код тестов: 
+
+* [Простой вариант](java/info/kgeorgiy/java/advanced/implementor/InterfaceImplementorTest)
+* [Сложный вариант](java/info/kgeorgiy/java/advanced/implementor/ClassImplementorTest.java)
+
 Домашнее задание 2. ArraySortedSet
 ----
 * Протестировать сложную версию задания: 

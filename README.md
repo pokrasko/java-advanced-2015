@@ -16,7 +16,7 @@
 
 Исходный код тестов: 
 
-* [Простой вариант](java/info/kgeorgiy/java/advanced/implementor/InterfaceImplementorTest)
+* [Простой вариант](java/info/kgeorgiy/java/advanced/implementor/InterfaceImplementorTest.java)
 * [Сложный вариант](java/info/kgeorgiy/java/advanced/implementor/ClassImplementorTest.java)
 
 Домашнее задание 2. ArraySortedSet

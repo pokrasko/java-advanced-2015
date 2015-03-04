@@ -51,7 +51,7 @@ public class ClassImplementorTest extends InterfaceImplementorTest {
 
     @Test
     public void test12_standardNonClasses() {
-        test(true, void.class, String[].class);
+        test(true, void.class, String[].class, int[].class, String.class, boolean.class);
     }
 
     @Test

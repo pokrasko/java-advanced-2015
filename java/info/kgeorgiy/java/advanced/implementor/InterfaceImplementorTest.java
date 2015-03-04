@@ -11,10 +11,14 @@ import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.MethodSorters;
+import org.omg.DynamicAny.DynAny;
 
 import javax.accessibility.Accessible;
+import javax.accessibility.AccessibleAction;
 import javax.annotation.Generated;
 import javax.management.Descriptor;
+import javax.management.loading.PrivateClassLoader;
+import javax.sql.rowset.CachedRowSet;
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import javax.xml.bind.Element;
@@ -55,22 +59,22 @@ public class InterfaceImplementorTest {
 
     @Test
     public void test02_standardMethodlessInterfaces() {
-        test(false, Element.class);
+        test(false, Element.class, PrivateClassLoader.class);
     }
 
     @Test
     public void test03_standardInterfaces() {
-        test(false, Accessible.class, Generated.class);
+        test(false, Accessible.class, AccessibleAction.class, Generated.class);
     }
 
     @Test
     public void test04_extendedInterfaces() {
-        test(false, Descriptor.class, Impler.class);
+        test(false, Descriptor.class, CachedRowSet.class, DynAny.class, Impler.class);
     }
 
     @Test
     public void test05_standardNonInterfaces() {
-        test(true, void.class, String[].class);
+        test(true, void.class, String[].class, int[].class, String.class, boolean.class);
     }
 
     @Test

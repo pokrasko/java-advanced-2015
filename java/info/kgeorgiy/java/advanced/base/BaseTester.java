@@ -34,6 +34,7 @@ public class BaseTester {
                     failure.getException().printStackTrace();
                 }
             }
+            System.exit(1);
         } else {
             System.out.println("============================");
             System.out.println("OK " + token.getSimpleName() + " for " + args[1]);

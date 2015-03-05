@@ -69,7 +69,7 @@ public class InterfaceImplementorTest {
 
     @Test
     public void test04_extendedInterfaces() {
-        test(false, Descriptor.class, CachedRowSet.class, DynAny.class, Impler.class);
+        test(false, Descriptor.class, CachedRowSet.class, DynAny.class);
     }
 
     @Test

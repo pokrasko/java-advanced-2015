@@ -9,7 +9,6 @@ import java.util.Map;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
- * @version $$Id$$
  */
 public class BaseTester {
     private final Map<String, Class<?>> tests = new HashMap<>();

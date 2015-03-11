@@ -3,7 +3,7 @@
 
 [Условия домашних заданий](http://www.kgeorgiy.info/courses/java-advanced/homeworks.html)
 
-Домашнее задание 3. Implementor
+Домашнее задание 3 и 4. Implementor / Jar Implementor
 ----
 * Протестировать сложную версию задания: 
     ```

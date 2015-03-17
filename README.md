@@ -6,17 +6,17 @@
 Домашнее задание 6. Итеративный параллелизм
 ----
 * Протестировать сложную версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.concurrent.Tester list <полное имя класса>
-    ```
+
+        info.kgeorgiy.java.advanced.concurrent.Tester list <полное имя класса>
+
   Класс должен реализовывать интерфейс 
-  [ScalarIP](java/info/kgeorgiy/java/advanced/concurrent/ScalarIP).
+  [ScalarIP](java/info/kgeorgiy/java/advanced/concurrent/ScalarIP.java).
 * Протестировать простую версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.concurrent.Tester scalar <полное имя класса>
-    ```
+    
+        info.kgeorgiy.java.advanced.concurrent.Tester scalar <полное имя класса>
+   
   Класс должен реализовывать интерфейс 
-  [ListIP](java/info/kgeorgiy/java/advanced/concurrent/ListIP).
+  [ListIP](java/info/kgeorgiy/java/advanced/concurrent/ListIP.java).
 
 Исходный код тестов: 
 
@@ -27,13 +27,18 @@
 Домашнее задание 3 и 4. Implementor / Jar Implementor
 ----
 * Протестировать сложную версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.implementor.Tester interface <полное имя класса>
-    ```
+    
+        info.kgeorgiy.java.advanced.implementor.Tester interface <полное имя класса>
+
+  Класс должен реализовывать интерфейс 
+  [JarImpler](java/info/kgeorgiy/java/advanced/implementor/JarImpler.java).
+    
 * Протестировать простую версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.implementor.Tester class <полное имя класса>
-    ```
+    
+        info.kgeorgiy.java.advanced.implementor.Tester class <полное имя класса>
+    
+  Класс должен реализовывать интерфейс 
+  [JarImpler](java/info/kgeorgiy/java/advanced/implementor/JarImpler.java).
 
 Исходный код тестов: 
 
@@ -43,13 +48,12 @@
 Домашнее задание 2. ArraySortedSet
 ----
 * Протестировать сложную версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.arrayset.Tester NavigableSet <полное имя класса>
-    ```
+
+        info.kgeorgiy.java.advanced.arrayset.Tester NavigableSet <полное имя класса>
+
 * Протестировать простую версию задания: 
-    ```
-    info.kgeorgiy.java.advanced.arrayset.Tester SortedSet <полное имя класса>
-    ```
+
+        info.kgeorgiy.java.advanced.arrayset.Tester SortedSet <полное имя класса>
 
 Исходный код тестов: 
 
@@ -64,9 +68,13 @@
     [junit-4.11.jar](lib/junit-4.11.jar) [hamcrest-core-1.3.jar](lib/hamcrest-core-1.3.jar)
  * Откомпилируйте решение домашнего задания
  * Запустите
-   `info.kgeorgiy.java.advanced.walk.Tester Walk <полное имя класса>`
+
+        info.kgeorgiy.java.advanced.walk.Tester Walk <полное имя класса>
+
    для простого варианта, и 
-   `info.kgeorgiy.java.advanced.walk.Tester RecursiveWalk <полное имя класса>`
+
+        info.kgeorgiy.java.advanced.walk.Tester RecursiveWalk <полное имя класса>
+
    для сложного. Обратите внимание, что все скачанные `.jar` файлы должны
    быть указаны в `CLASSPATH`.
     

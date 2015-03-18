@@ -22,8 +22,29 @@ import java.util.stream.Collectors;
 @RunWith(JUnit4.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ScalarIPTest<P extends ScalarIP> {
-    public static final int N = 10_000;
+    public static final Comparator<Integer> BURN_COMPARATOR = (o1, o2) -> {
+        int total = o1 + o2;
+        for (int i = 0; i < 50_000_000; i++) {
+            total += i;
+        }
+        if (total == o1 + o2) {
+            throw new AssertionError();
+        }
+        return Integer.compare(o1, o2);
+    };
+
+    public static final Comparator<Integer> SLEEP_COMPARATOR = (o1, o2) -> {
+        try {
+            Thread.sleep(10);
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Integer.compare(o1, o2);
+    };
+
+    public static final List<Integer> sizes = Arrays.asList(10_000, 5, 2, 1);
     private final Random random = new Random(3257083275083275083L);
+    protected List<Integer> factors = Arrays.asList(0);
 
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -34,92 +55,80 @@ public class ScalarIPTest<P extends ScalarIP> {
 
     @Test
     public void test01_maximum() throws InterruptedException {
-        test(N, Collections::max, ScalarIP::maximum, comparators);
+        test(Collections::max, ScalarIP::maximum, comparators);
     }
 
     @Test
     public void test02_minimum() throws InterruptedException {
-        test(N, Collections::min, ScalarIP::minimum, comparators);
+        test(Collections::min, ScalarIP::minimum, comparators);
     }
 
     @Test
     public void test03_all() throws InterruptedException {
-        test(N, (data, predicate) -> data.stream().allMatch(predicate), ScalarIP::all, predicates);
+        test((data, predicate) -> data.stream().allMatch(predicate), ScalarIP::all, predicates);
     }
 
     @Test
     public void test04_any() throws InterruptedException {
-        test(N, (data, predicate) -> data.stream().anyMatch(predicate), ScalarIP::any, predicates);
+        test((data, predicate) -> data.stream().anyMatch(predicate), ScalarIP::any, predicates);
     }
 
     @Test
     public void test05_sleepPerformance() throws InterruptedException {
         final List<Integer> data = randomList(200);
-        final Comparator<Integer> sleepComparator = (o1, o2) -> {
-            try {
-                Thread.sleep(10);
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            }
-            return Integer.compare(o1, o2);
-        };
-        final double speedup = speedup(data, sleepComparator, 8);
-        Assert.assertTrue("Not parallel", speedup > 5);
+        final int procs = Runtime.getRuntime().availableProcessors();
+        final double speedup = speedup(data, SLEEP_COMPARATOR, procs * 2, procs * 2);
+        Assert.assertTrue("Not parallel", speedup > procs / 1.5);
     }
 
     @Test
     public void test06_burnPerformance() throws InterruptedException {
         final List<Integer> data = randomList(200);
-        final Comparator<Integer> burnComparator = (o1, o2) -> {
-            int total = o1 + o2;
-            for (int i = 0; i < 100_000_000; i++) {
-                total += i;
-            }
-            if (total == o1 + o2) {
-                throw new AssertionError();
-            }
-            return Integer.compare(o1, o2);
-        };
         final int procs = Runtime.getRuntime().availableProcessors();
-        final double speedup = speedup(data, burnComparator, procs * 2);
+        final double speedup = speedup(data, BURN_COMPARATOR, procs * 2, procs * 2);
         Assert.assertTrue("Not parallel", speedup > procs / 1.5);
         Assert.assertTrue("Too parallel", speedup < procs * 1.1);
     }
 
-    private double speedup(final List<Integer> data, final Comparator<Integer> sleepComparator, final int threads) throws InterruptedException {
-        final long time1 = maximum(1, data, ScalarIP::maximum, sleepComparator);
-        final long time2 = maximum(threads, data, ScalarIP::maximum, sleepComparator);
+    protected double speedup(final List<Integer> data, final Comparator<Integer> sleepComparator, final int parts, final int threads) throws InterruptedException {
+        final long time1 = speed(threads, 1, data, ScalarIP::maximum, sleepComparator);
+        final long time2 = speed(threads, parts, data, ScalarIP::maximum, sleepComparator);
         final double speedup = time1 / (double) time2;
         System.err.format("Speed up %.1f\n", speedup);
         return speedup;
     }
 
-    private long maximum(final int threads, final List<Integer> data, final ConcurrentFunction<P, Integer, Comparator<Integer>> f, final Comparator<Integer> comparator) throws InterruptedException {
+    private long speed(final int threads, final int subtasks, final List<Integer> data, final ConcurrentFunction<P, Integer, Comparator<Integer>> f, final Comparator<Integer> comparator) throws InterruptedException {
         final long start = System.nanoTime();
-        f.apply(createInstance(), threads, data, comparator);
+        f.apply(createInstance(threads), subtasks, data, comparator);
         return System.nanoTime() - start;
     }
 
-    protected <T, U> void test(final int n, final BiFunction<List<Integer>, U, T> fExpected, final ConcurrentFunction<P, T, U> fActual, final List<Named<U>> cases) throws InterruptedException {
-        final P instance = createInstance();
-        final List<Integer> data = randomList(n);
-        for (final Named<U> named : cases) {
-            final T expected = fExpected.apply(data, named.value);
-            System.err.print(named.name + ", threads: ");
-            for (int threads = 1; threads <= 10; threads++) {
-                System.err.print(" " + threads);
-                Assert.assertEquals(threads + " threads", expected, fActual.apply(instance, threads, data, named.value));
+    protected <T, U> void test(final BiFunction<List<Integer>, U, T> fExpected, final ConcurrentFunction<P, T, U> fActual, final List<Named<U>> cases) throws InterruptedException {
+        for (final int factor : factors) {
+            final P instance = createInstance(factor);
+            for (final int n : sizes) {
+                System.err.println("    --- Size " + n);
+                final List<Integer> data = randomList(n);
+                for (final Named<U> named : cases) {
+                    final T expected = fExpected.apply(data, named.value);
+                    System.err.print("        " + named.name + ", threads: ");
+                    for (int threads = 1; threads <= 10; threads++) {
+                        System.err.print(" " + threads);
+                        Assert.assertEquals(threads + " threads", expected, fActual.apply(instance, threads, data, named.value));
+                    }
+                    System.err.println();
+                }
+                System.err.println();
             }
-            System.err.println();
         }
-        System.err.println();
     }
 
     interface ConcurrentFunction<P, T, U> {
         T apply(P instance, int threads, List<Integer> data, U value) throws InterruptedException;
     }
 
-    private List<Integer> randomList(final int size) {
+    protected List<Integer> randomList(final int size) {
         final List<Integer> pool = random.ints(Math.min(size, 1000_000)).boxed().collect(Collectors.toList());
         final List<Integer> result = new ArrayList<>();
         for (int i = 0; i < size; i++) {
@@ -129,7 +138,7 @@ public class ScalarIPTest<P extends ScalarIP> {
     }
 
     @SuppressWarnings("unchecked")
-    private P createInstance() {
+    protected P createInstance(int threads) {
         final String className = System.getProperty("cut");
         Assert.assertTrue("Class name not specified", className != null);
 

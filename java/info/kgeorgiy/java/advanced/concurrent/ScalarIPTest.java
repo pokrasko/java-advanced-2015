@@ -71,8 +71,13 @@ public class ScalarIPTest<P extends ScalarIP> {
     public void test06_burnPerformance() throws InterruptedException {
         final List<Integer> data = randomList(200);
         final Comparator<Integer> burnComparator = (o1, o2) -> {
-            final long start = System.currentTimeMillis();
-            while (System.currentTimeMillis() < start + 10);
+            int total = o1 + o2;
+            for (int i = 0; i < 100_000_000; i++) {
+                total += i;
+            }
+            if (total == o1 + o2) {
+                throw new AssertionError();
+            }
             return Integer.compare(o1, o2);
         };
         final int procs = Runtime.getRuntime().availableProcessors();
